@@ -6,6 +6,14 @@ import adult from './assets/images/18th.jpeg'
 import mini from './assets/images/minimal.jpeg'
 import jungle from './assets/images/wp1.png'
 import thirty from './assets/images/30th Happy Birthday Decorations.jpeg'
+import baby from './assets/images/baby.jpg'
+import boy from './assets/images/a boy.jpg'
+import girl from './assets/images/a girl.jpg'
+import ohbaby from './assets/images/oh baby.jpg'
+import glided from './assets/images/glided.jpg'
+import premium from './assets/images/premium.jpg'
+import bear from './assets/images/bear.jpg'
+
 
 const products = [
   // ===== BIRTHDAY DECORATIONS (25 products) =====
@@ -154,11 +162,62 @@ const products = [
     subCategory: "Boy Baby Shower", 
     price: 1800, 
     originalPrice: 2200, 
-    image: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500", 
+    image: boy, 
     description: "Elegant blue themed baby shower decoration", 
     fullDescription: "Celebrate the upcoming arrival of your baby boy with our elegant and minimal baby shower decoration package. Featuring soothing blue tones and sophisticated design elements that create the perfect atmosphere for this special occasion.", 
-    features: ["Elegant blue and white color palette", "Premium quality decorative elements", "Personalized welcome signage", "Table centerpieces and backdrop setup", "Photo booth area with props", "Coordinated theme throughout the venue"], 
-    includes: "Complete venue decoration, backdrop, table settings, welcome board, and themed accessories", 
+    features: ["Elegant blue and white color palette", "Premium quality decorative elements", "Table centerpieces and backdrop setup", "Photo booth area with props", "Coordinated theme throughout the venue"], 
+    includes: "Complete venue decoration, backdrop, table settings and themed accessories", 
+    setupTime: "3-4 hours", 
+    rating: 4.8, 
+    ratingCount: 62, 
+    discount: 18 
+  },
+  { 
+    id: 200, 
+    name: "Oh baby shower decor", 
+    category: "baby-shower", 
+    subCategory: "oh Baby Shower", 
+    price: 1800, 
+    originalPrice: 2200, 
+    image: ohbaby, 
+    description: "oh baby shower setup with pampas, lights & neon sign", 
+    fullDescription: "There's nothing quite as magical as anticipating a new life- and this boho baby shower design turns anticipation into an endearing celebration. With pampas grass, gentle drapes, and the cozy neon lighting spelling out Oh Baby the atmosphere is earthy, warm, and filled with love.", 
+    features: ["oh baby neon sign board", "Premium quality decorative elements", "Table centerpieces and backdrop setup", "Photo booth area with props", "1 teddy Bear", "Coordinated theme throughout the venue"], 
+    includes: "Complete venue decoration, backdrop, table settings and themed accessories", 
+    setupTime: "3-4 hours", 
+    rating: 4.8, 
+    ratingCount: 62, 
+    discount: 18 
+  },
+  { 
+    id: 200, 
+    name: "Cocoa bear baby shower decor", 
+    category: "baby-shower", 
+    subCategory: "Baby Shower", 
+    price: 1800, 
+    originalPrice: 2200, 
+    image: bear, 
+    description: "oh baby shower setup with teddy bear, lights & neon sign", 
+    fullDescription: "Are you beginning the journey to motherhood, eagerly looking forward to the arrival of your little one? Well, it's time for a sweet celebration surrounded by your loved ones. We understand that stepping into motherhood is both special and, at times, a bit overwhelming. That's why a baby shower is a must a lighthearted gathering with your closest friends and family. Introducing our special Cocoa Bear theme baby shower decorations designed for your home or even an outdoor venue.", 
+    features: ["''OH BABY'' Neon Light ", "It's a boy banner", "Multi Coloured balloons", "4 mini teddies", "1 Teddy Bear",], 
+    includes: "Complete venue decoration, backdrop, table settings and themed accessories", 
+    setupTime: "3-4 hours", 
+    rating: 4.8, 
+    ratingCount: 62, 
+    discount: 18 
+  },
+  { 
+    id: 200, 
+    name: "A Budget-Friendly baby shower", 
+    category: "baby-shower", 
+    subCategory: "Baby Shower", 
+    price: 1800, 
+    originalPrice: 2200, 
+    image: glided, 
+    description: "Celebrate a new beginnings with our Glided Baby Shower Decorations", 
+    fullDescription: "Celebrate the joy of impending motherhood with a touch of elegance and surprise. Our meticulously curated gilded baby shower decorations are the perfect way to create an unforgettable experience for the mother-to-be. Loaded with pastel blue and pink balloons, as well as a charming girl feet and boy feet balloon, this decor exudes a sense of anticipation and delight. To add a touch of glam, we've included a gold confetti balloon with sky-blue flex, creating a mesmerizing focal point. Whether it's a baby shower or a welcome party for your little one, this decor promises to make the celebration truly memorable.", 
+    features: ["1 girl feet foil balloon", "1 boy feet foil balloon", "oh baby foil balloon golden", "Premium quality decorative elements", "Coordinated theme throughout the venue"], 
+    includes: "Complete venue decoration, backdrop, table settings and themed accessories", 
     setupTime: "3-4 hours", 
     rating: 4.8, 
     ratingCount: 62, 
@@ -171,7 +230,7 @@ const products = [
     subCategory: "Girl Baby Shower", 
     price: 1750, 
     originalPrice: 2100, 
-    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500", 
+    image: girl, 
     description: "Pastel colored baby shower balloon setup", 
     fullDescription: "Welcome your baby girl with our beautiful pastel-themed baby shower decoration.", 
     features: ["Soft pastel color palette", "Premium balloon garland installation", "Gender-specific themed elements", "Cute and adorable props", "Instagram-worthy photo corners", "Coordinated table decorations"], 
@@ -188,11 +247,11 @@ const products = [
     subCategory: "Twin Baby Shower", 
     price: 4200, 
     originalPrice: 5000, 
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500", 
+    image: baby, 
     description: "Premium circular baby shower decoration", 
     fullDescription: "Double the joy with our premium twin baby shower decoration package.", 
-    features: ["Unique circular/ring design setup", "Dual-theme elements for twins", "Premium quality materials throughout", "360-degree decorated centerpiece", "Matching pair decorative elements", "Special twin-themed accessories"], 
-    includes: "Circular structure setup, dual theme coordination, premium materials, and specialized twin-themed decor", 
+    features: ["1 Girl foil balloon", "1 boy foil balloon", "Dual-theme elements for twins", "Premium quality materials throughout", "Matching pair decorative elements", "Special twin-themed accessories"], 
+    includes: "Premium structure setup, dual theme coordination, premium materials, and specialized twin-themed decor", 
     setupTime: "4 hours", 
     rating: 4.9, 
     ratingCount: 41, 
@@ -202,10 +261,10 @@ const products = [
     id: 9, 
     name: "Baby Shower Ring Setup Premium", 
     category: "baby-shower", 
-    subCategory: "Gender Reveal", 
+    subCategory: "", 
     price: 2300, 
     originalPrice: 2800, 
-    image: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=500", 
+    image: premium, 
     description: "Yellow themed baby shower decoration ring", 
     fullDescription: "Keep everyone guessing with our exciting gender reveal party decoration.", 
     features: ["Gender-neutral yellow theme", "Question mark and surprise elements", "Reveal-ready balloon arrangements", "Photo-worthy reveal backdrop", "Anticipation-building decorations", "Includes reveal props and accessories"], 
