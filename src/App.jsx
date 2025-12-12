@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Star, Phone, Mail, MapPin, Menu, X, Heart, MessageCircle, Search, ChevronDown, Package, Sparkles, Clock, CheckCircle } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import products from './products';
@@ -45,15 +45,59 @@ const sendEmail = async (formData) => {
 };
 
 function App() {
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState(() => {
+    return localStorage.getItem('currentPage') || 'home'
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => {
+    return localStorage.getItem('searchQuery') || ''
+  });
   const [showDecorDropdown, setShowDecorDropdown] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    return localStorage.getItem('selectedCategory') || ''
+  });
   const savedScrollPosition = useRef(0);
   const [fromViewMore, setFromViewMore] = useState(false);
+
+  useState(() => {
+    localStorage.setItem('currentPage', currentPage)
+  }, [currentPage])
+
+  useState(() => {
+    localStorage.setItem('selectedCategory', selectedCategory)
+  },[selectedCategory])
+
+  useState(() => {
+    localStorage.setItem('searchQuery', searchQuery)
+  },[searchQuery])
+
+  useState(() => {
+    localStorage.setItem('scrollPosition', window.scrollY)
+  },[currentPage, selectedCategory])
+
+  useEffect(() => {
+    const savedScroll = localStorage.getItem('scrollPosition')
+    if(savedScroll) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScroll)) // in this it load last position that we scrolled to like if i go down on page for about 500px then in localstorage it stores this 500px as text at that point but when i refresh parseInt converts it into number so my can save it 
+      }, 100);
+    }
+  })
+
+  const [selectedProduct, setSelectedProduct] = useState(() => {
+    const saved = localStorage.getItem('selectedProduct')
+    return saved ? JSON.parse(saved) : 'null' // in this it load the selected product from browser memory after when we refresh so JSON.parse convert the product from text description to object so our app can display it 
+    // in localstorage when we want to save something we have to convert it into text because browser(localstorage) only read text but to extract from we use parseInt: which converts text to a number, parse: text to object
+  })
+
+  useEffect(() => {
+    if(selectedProduct) {
+      localStorage.setItem('selectedProduct', JSON.stringify(selectedProduct))
+    } else{
+      localStorage.removeItem('selectedProduct')
+    }
+  }, [selectedProduct])
 
   const sortedProducts = [...products].sort((a, b) => b.rating - a.rating);
   const filteredProducts = sortedProducts.filter(p =>
