@@ -11,7 +11,6 @@ const EMAIL_CONFIG = {
 
 const sendEmail = async (formData) => {
   try {
-    // 1️⃣ Send Thank You mail to USER
     await emailjs.send(
       'service_7g8ttma',
       'template_wv2qp3k',
@@ -24,7 +23,6 @@ const sendEmail = async (formData) => {
       'EA6Y820QCQ1ZhR1Vx'
     );
 
-    // 2️⃣ Send details mail to YOU (Admin)
     await emailjs.send(
       'service_7g8ttma',
       'template_npy5olb',
@@ -45,25 +43,16 @@ const sendEmail = async (formData) => {
 };
 
 function App() {
-  const [currentPage, setCurrentPage] = useState(() => {
-    return localStorage.getItem('currentPage') || 'home';
-  });
+  const [currentPage, setCurrentPage] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(() => {
-    return localStorage.getItem('searchQuery') || '';
-  });
+  const [searchQuery, setSearchQuery] = useState('');
   const [showDecorDropdown, setShowDecorDropdown] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(() => {
-    return localStorage.getItem('selectedCategory') || '';
-  });
+  const [selectedCategory, setSelectedCategory] = useState('');
   const savedScrollPosition = useRef(0);
   const [fromViewMore, setFromViewMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(() => {
-    const saved = localStorage.getItem('selectedProduct');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [showToast, setShowToast] = useState(false);
 
   const sortedProducts = [...products].sort((a, b) => b.rating - a.rating);
@@ -72,39 +61,6 @@ function App() {
     p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  useEffect(() => {
-    localStorage.setItem('currentPage', currentPage);
-  }, [currentPage]);
-
-  useEffect(() => {
-    localStorage.setItem('selectedCategory', selectedCategory);
-  }, [selectedCategory]);
-
-  useEffect(() => {
-    localStorage.setItem('searchQuery', searchQuery);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    localStorage.setItem('scrollPosition', window.scrollY);
-  }, [currentPage, selectedCategory]);
-
-  useEffect(() => {
-    const savedScroll = localStorage.getItem('scrollPosition');
-    if (savedScroll) {
-      setTimeout(() => {
-        window.scrollTo(0, parseInt(savedScroll));
-      }, 100);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (selectedProduct) {
-      localStorage.setItem('selectedProduct', JSON.stringify(selectedProduct));
-    } else {
-      localStorage.removeItem('selectedProduct');
-    }
-  }, [selectedProduct]);
 
   const toggleFavorite = (productId) => {
     setFavorites(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]);
@@ -147,7 +103,7 @@ function App() {
     <nav className="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-pink-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <div className="flex items-center space-x-2 cursor-pointer group" onClick={() => { setCurrentPage('home'); setSelectedCategory(''); scrollToTop(); }}>
+          <div className="flex items-center space-x-2 cursor-pointer group" onClick={(e) => { e.stopPropagation(); setCurrentPage('home'); setSelectedCategory(''); scrollToTop(); }}>
             <div className="w-10 h-10 bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
@@ -190,56 +146,164 @@ function App() {
             </div>
           </div>
 
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-xl hover:bg-pink-50 transition-colors">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl hover:bg-pink-50 transition-colors"
+          >
             {mobileMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
           </button>
         </div>
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-20 bg-black/60 backdrop-blur-sm z-40 animate-fadeIn" onClick={() => { setMobileMenuOpen(false); setShowDecorDropdown(false); }}>
-          <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl animate-slideInRight" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 space-y-2 overflow-y-auto h-full">
-              <div className="flex items-center space-x-3 mb-6 pb-6 border-b border-gray-200">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 flex items-center justify-center text-white shadow-lg">
-                  <Sparkles className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-lg">Dazzle2Bliss</h3>
-                  <p className="text-sm text-gray-500">Event Decorations</p>
-                </div>
+  <>
+    <div
+      className="fixed top-0 left-0 right-0 bottom-0 bg-black/70 z-40 md:hidden"
+      style={{ 
+        height: '100vh',
+        width: '100vw',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)'
+      }}
+      onClick={() => {
+        setMobileMenuOpen(false);
+        setShowDecorDropdown(false);
+      }}
+    />
+    <div className="fixed top-20 left-0 right-0 bg-white shadow-2xl z-50 md:hidden max-h-[calc(100vh-5rem)] overflow-y-auto border-t-2 border-pink-200">
+      <div className="p-6 space-y-4">
+        <div
+          onClick={() => {
+            setCurrentPage('home');
+            setSelectedCategory('');
+            setMobileMenuOpen(false);
+            scrollToTop();
+          }}
+          className="flex items-center p-4 rounded-xl bg-gradient-to-r from-pink-50 to-purple-50 hover:from-pink-100 hover:to-purple-100 cursor-pointer transition-all shadow-md"
+        >
+          <span className="text-2xl mr-3">🏠</span>
+          <span className="font-semibold text-gray-900">Home</span>
+        </div>
+
+        <div className="space-y-2">
+          <div
+            onClick={() => setShowDecorDropdown(!showDecorDropdown)}
+            className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-pink-50 to-purple-50 hover:from-pink-100 hover:to-purple-100 cursor-pointer transition-all shadow-md"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl mr-3">🎨</span>
+              <span className="font-semibold text-gray-900">Decorations</span>
+            </div>
+            <ChevronDown className={`w-5 h-5 transition-transform ${showDecorDropdown ? 'rotate-180' : ''}`} />
+          </div>
+
+          {showDecorDropdown && (
+            <div className="ml-6 space-y-2 pl-4 border-l-2 border-pink-300">
+              <div
+                onClick={() => {
+                  setFromViewMore(false);
+                  setCurrentPage('decorations');
+                  setSearchQuery('');
+                  setMobileMenuOpen(false);
+                  setShowDecorDropdown(false);
+                  scrollToTop();
+                }}
+                className="p-3 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold cursor-pointer hover:shadow-lg transition-all"
+              >
+                ✨ All Decorations
               </div>
-              <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setCurrentPage('home'); setSelectedCategory(''); scrollToTop(); }} className="flex items-center w-full py-3 px-4 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 transition-all font-medium">
-                <span className="mr-3 text-xl">🏠</span> Home
-              </button>
-              <div>
-                <button onClick={(e) => { e.stopPropagation(); setShowDecorDropdown(!showDecorDropdown); }} className="flex items-center justify-between w-full py-3 px-4 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 transition-all font-medium">
-                  <span><span className="mr-3 text-xl">🎨</span> Decorations</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showDecorDropdown ? 'rotate-180' : ''}`} />
-                </button>
-                <div className={`ml-8 space-y-1 overflow-hidden transition-all duration-300 ${showDecorDropdown ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-                  <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setFromViewMore(false); setCurrentPage('decorations'); setSearchQuery(''); scrollToTop(); }} className="block w-full text-left py-2 px-4 text-sm font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg">All</button>
-                  <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setFromViewMore(false); setCurrentPage('decorations'); setSearchQuery('birthday'); scrollToTop(); }} className="block w-full text-left py-2 px-4 text-sm text-gray-600 hover:text-pink-600">🎂 Birthday</button>
-                  <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setFromViewMore(false); setCurrentPage('decorations'); setSearchQuery('baby-shower'); scrollToTop(); }} className="block w-full text-left py-2 px-4 text-sm text-gray-600 hover:text-pink-600">👶 Baby Shower</button>
-                  <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setFromViewMore(false); setCurrentPage('decorations'); setSearchQuery('anniversary'); scrollToTop(); }} className="block w-full text-left py-2 px-4 text-sm text-gray-600 hover:text-pink-600">💑 Anniversary</button>
-                  <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setFromViewMore(false); setCurrentPage('decorations'); setSearchQuery('theme'); scrollToTop(); }} className="block w-full text-left py-2 px-4 text-sm text-gray-600 hover:text-pink-600">🎨 Theme Decor</button>
-                </div>
+              <div
+                onClick={() => {
+                  setFromViewMore(false);
+                  setCurrentPage('decorations');
+                  setSearchQuery('birthday');
+                  setMobileMenuOpen(false);
+                  setShowDecorDropdown(false);
+                  scrollToTop();
+                }}
+                className="p-3 rounded-lg hover:bg-pink-50 text-gray-700 cursor-pointer transition-all"
+              >
+                🎂 Birthday
               </div>
-              <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setCurrentPage('about'); scrollToTop(); }} className="flex items-center w-full py-3 px-4 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 transition-all font-medium">
-                <span className="mr-3 text-xl">ℹ️</span> About
-              </button>
-              <button onClick={() => { setShowDecorDropdown(false); setMobileMenuOpen(false); setCurrentPage('contact'); scrollToTop(); }} className="flex items-center w-full py-3 px-4 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 transition-all font-medium">
-                <span className="mr-3 text-xl">📞</span> Contact
-              </button>
-              <div className="pt-6 mt-6 border-t border-gray-200">
-                <a href="tel:8510011234" className="flex items-center justify-center w-full py-3 px-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold hover:shadow-xl transition-all transform hover:scale-105">
-                  <Phone className="w-5 h-5 mr-2" />8510011234
-                </a>
+              <div
+                onClick={() => {
+                  setFromViewMore(false);
+                  setCurrentPage('decorations');
+                  setSearchQuery('baby-shower');
+                  setMobileMenuOpen(false);
+                  setShowDecorDropdown(false);
+                  scrollToTop();
+                }}
+                className="p-3 rounded-lg hover:bg-pink-50 text-gray-700 cursor-pointer transition-all"
+              >
+                👶 Baby Shower
+              </div>
+              <div
+                onClick={() => {
+                  setFromViewMore(false);
+                  setCurrentPage('decorations');
+                  setSearchQuery('anniversary');
+                  setMobileMenuOpen(false);
+                  setShowDecorDropdown(false);
+                  scrollToTop();
+                }}
+                className="p-3 rounded-lg hover:bg-pink-50 text-gray-700 cursor-pointer transition-all"
+              >
+                💑 Anniversary
+              </div>
+              <div
+                onClick={() => {
+                  setFromViewMore(false);
+                  setCurrentPage('decorations');
+                  setSearchQuery('theme');
+                  setMobileMenuOpen(false);
+                  setShowDecorDropdown(false);
+                  scrollToTop();
+                }}
+                className="p-3 rounded-lg hover:bg-pink-50 text-gray-700 cursor-pointer transition-all"
+              >
+                🎨 Theme Decor
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+
+        <div
+          onClick={() => {
+            setCurrentPage('about');
+            setMobileMenuOpen(false);
+            scrollToTop();
+          }}
+          className="flex items-center p-4 rounded-xl bg-gradient-to-r from-pink-50 to-purple-50 hover:from-pink-100 hover:to-purple-100 cursor-pointer transition-all shadow-md"
+        >
+          <span className="text-2xl mr-3">ℹ️</span>
+          <span className="font-semibold text-gray-900">About</span>
+        </div>
+
+        <div
+          onClick={() => {
+            setCurrentPage('contact');
+            setMobileMenuOpen(false);
+            scrollToTop();
+          }}
+          className="flex items-center p-4 rounded-xl bg-gradient-to-r from-pink-50 to-purple-50 hover:from-pink-100 hover:to-purple-100 cursor-pointer transition-all shadow-md"
+        >
+          <span className="text-2xl mr-3">📞</span>
+          <span className="font-semibold text-gray-900">Contact</span>
+        </div>
+
+        <a
+          href="tel:8510011234"
+          className="flex items-center justify-center p-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold hover:shadow-xl transition-all mt-6"
+        >
+          <Phone className="w-5 h-5 mr-2" />
+          8510011234
+        </a>
+      </div>
+    </div>
+  </>
+)}
     </nav>
   );
 
