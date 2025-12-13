@@ -45,16 +45,25 @@ const sendEmail = async (formData) => {
 };
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState(() => {
+    return localStorage.getItem('currentPage') || 'home';
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => {
+    return localStorage.getItem('searchQuery') || '';
+  });
   const [showDecorDropdown, setShowDecorDropdown] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    return localStorage.getItem('selectedCategory') || '';
+  });
   const savedScrollPosition = useRef(0);
   const [fromViewMore, setFromViewMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(() => {
+    const saved = localStorage.getItem('selectedProduct');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [showToast, setShowToast] = useState(false);
 
   const sortedProducts = [...products].sort((a, b) => b.rating - a.rating);
@@ -63,6 +72,39 @@ function App() {
     p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  useEffect(() => {
+    localStorage.setItem('currentPage', currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    localStorage.setItem('selectedCategory', selectedCategory);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    localStorage.setItem('searchQuery', searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    localStorage.setItem('scrollPosition', window.scrollY);
+  }, [currentPage, selectedCategory]);
+
+  useEffect(() => {
+    const savedScroll = localStorage.getItem('scrollPosition');
+    if (savedScroll) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScroll));
+      }, 100);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedProduct) {
+      localStorage.setItem('selectedProduct', JSON.stringify(selectedProduct));
+    } else {
+      localStorage.removeItem('selectedProduct');
+    }
+  }, [selectedProduct]);
 
   const toggleFavorite = (productId) => {
     setFavorites(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]);
@@ -113,7 +155,7 @@ function App() {
               Dazzle2Bliss
             </h1>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-1">
             <button onClick={() => { setCurrentPage('home'); setSelectedCategory(''); scrollToTop(); }} className="px-4 py-2 text-gray-700 hover:text-pink-600 transition-all font-medium rounded-lg hover:bg-pink-50">Home</button>
             <div className="relative group">
@@ -140,20 +182,20 @@ function App() {
             <button onClick={() => { setCurrentPage('about'); scrollToTop(); }} className="px-4 py-2 text-gray-700 hover:text-pink-600 transition-all font-medium rounded-lg hover:bg-pink-50">About</button>
             <button onClick={() => { setCurrentPage('contact'); scrollToTop(); }} className="px-4 py-2 text-gray-700 hover:text-pink-600 transition-all font-medium rounded-lg hover:bg-pink-50">Contact</button>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-3">
             <div className="flex items-center space-x-2 bg-gradient-to-r from-pink-50 to-purple-50 px-4 py-2 rounded-full border border-pink-200">
               <Phone className="w-5 h-5 text-pink-600" />
               <span className="text-gray-900 font-semibold">8510011234</span>
             </div>
           </div>
-          
+
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-xl hover:bg-pink-50 transition-colors">
             {mobileMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
           </button>
         </div>
       </div>
-      
+
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-20 bg-black/60 backdrop-blur-sm z-40 animate-fadeIn" onClick={() => { setMobileMenuOpen(false); setShowDecorDropdown(false); }}>
           <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl animate-slideInRight" onClick={(e) => e.stopPropagation()}>
@@ -202,23 +244,23 @@ function App() {
   );
 
   const HeroSection = () => {
-      const [formData, setFormData] = useState({ celebration: '', name: '', phone: '', email: '' });
-      const [showToast, setShowToast] = useState(false);
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!formData.celebration || !formData.name || !formData.phone) {
-          alert('Please fill all fields');
-          return;
-        }
-        try {
-          await sendEmail(formData);
-          setShowToast(true);
-          setFormData({ celebration: '', name: '', phone: '', email: '' });
-          setTimeout(() => setShowToast(false), 3000);
-        } catch (error) {
-          alert('Failed to send. Please try again.');
-        }
-      };
+    const [formData, setFormData] = useState({ celebration: '', name: '', phone: '', email: '' });
+    const [showToast, setShowToast] = useState(false);
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (!formData.celebration || !formData.name || !formData.phone) {
+        alert('Please fill all fields');
+        return;
+      }
+      try {
+        await sendEmail(formData);
+        setShowToast(true);
+        setFormData({ celebration: '', name: '', phone: '', email: '' });
+        setTimeout(() => setShowToast(false), 3000);
+      } catch (error) {
+        alert('Failed to send. Please try again.');
+      }
+    };
 
     return (
       <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-purple-50 py-16 md:py-24">
@@ -227,7 +269,7 @@ function App() {
           <div className="absolute -bottom-1/2 -left-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
-        
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8 animate-fadeIn">
@@ -235,15 +277,15 @@ function App() {
                 <Phone className="w-4 h-4 text-pink-600 animate-pulse" />
                 <span className="text-sm font-semibold text-gray-900">Call Now: 8510011234</span>
               </div>
-              
+
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
                 Make Every <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">Celebration</span> Magical
               </h1>
-              
+
               <p className="text-xl text-gray-600 leading-relaxed">
                 Expert decoration services for birthdays, baby showers, anniversaries, and special moments. Customized designs that bring your vision to life.
               </p>
-              
+
               <div className="flex flex-wrap gap-4">
                 <button onClick={() => { setCurrentPage('contact'); scrollToTop(); }} className="group bg-gradient-to-r from-pink-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all flex items-center space-x-2">
                   <span>Get Started</span>
@@ -253,7 +295,7 @@ function App() {
                   View Gallery
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
                 <div>
                   <div className="text-3xl font-bold text-pink-600">500+</div>
@@ -269,7 +311,7 @@ function App() {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white/90 backdrop-blur-sm p-8 md:p-10 rounded-3xl shadow-2xl border border-pink-100 animate-fadeIn animation-delay-200">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center">
@@ -280,7 +322,7 @@ function App() {
                   <p className="text-sm text-gray-600">Limited time offer</p>
                 </div>
               </div>
-              
+
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Celebration Type *</label>
@@ -325,7 +367,7 @@ function App() {
       { name: 'Welcome Baby', value: 'welcome-baby', icon: '🍼', color: 'from-purple-500 via-pink-500 to-purple-600', bgColor: 'from-purple-50 to-pink-50' },
       { name: 'Anniversary', value: 'anniversary', icon: '💑', color: 'from-red-500 via-pink-500 to-red-600', bgColor: 'from-red-50 to-pink-50' }
     ];
-    
+
     return (
       <div className="py-20 bg-gradient-to-br from-gray-50 via-white to-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -333,7 +375,7 @@ function App() {
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Browse by Category</h2>
             <p className="text-xl text-gray-600">Find the perfect decoration for your special occasion</p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {categories.map((cat) => (
               <button key={cat.value} onClick={() => saveScrollAndOpenCategory(cat.value)} className={`group relative bg-gradient-to-br ${cat.bgColor} p-8 rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-3 transition-all duration-300 border border-gray-200`}>
@@ -353,7 +395,7 @@ function App() {
 
   const ProductCard = ({ product }) => {
     const isFavorite = favorites.includes(product.id);
-    
+
     return (
       <div className="group bg-white rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300 cursor-pointer border border-gray-100">
         <div className="relative overflow-hidden">
@@ -368,7 +410,7 @@ function App() {
           <img src={product.image} alt={product.name} className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500" onClick={() => { setSelectedProduct(product); setCurrentPage('product'); scrollToTop(); }} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
-        
+
         <div className="p-6" onClick={() => { setSelectedProduct(product); setCurrentPage('product'); scrollToTop(); }}>
           <div className="flex items-center mb-3">
             <div className="flex items-center">
@@ -378,13 +420,13 @@ function App() {
             </div>
             <span className="ml-2 text-sm text-gray-600 font-medium">({product.ratingCount})</span>
           </div>
-          
+
           <h3 className="font-bold text-gray-900 mb-2 text-lg line-clamp-2 group-hover:text-pink-600 transition-colors">{product.name}</h3>
-          
+
           {product.subCategory && (
             <p className="text-sm text-pink-600 font-medium mb-3">{product.subCategory}</p>
           )}
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <span className="text-2xl font-bold text-pink-600">₹{product.price}</span>
@@ -403,7 +445,7 @@ function App() {
 
   const ProductSection = ({ title, category, limit = 6, showViewMore = false }) => {
     const filtered = category ? sortedProducts.filter(p => p.category === category).slice(0, limit) : sortedProducts.slice(0, limit);
-    
+
     return (
       <div className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -411,11 +453,11 @@ function App() {
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">{title}</h2>
             <div className="w-24 h-1.5 bg-gradient-to-r from-pink-500 to-purple-600 mx-auto rounded-full"></div>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map(product => <ProductCard key={product.id} product={product} />)}
           </div>
-          
+
           {showViewMore && (
             <div className="flex justify-center mt-12">
               <button onClick={() => handleViewMore(category)} className="group bg-gradient-to-r from-pink-600 to-purple-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all flex items-center space-x-2">
@@ -431,7 +473,7 @@ function App() {
 
   const SearchBar = () => {
     const [localSearch, setLocalSearch] = useState(searchQuery);
-    
+
     return (
       <div className="max-w-3xl mx-auto px-4 mb-12">
         <div className="relative">
@@ -455,12 +497,12 @@ function App() {
   const ProductDetails = () => {
     const [userRating, setUserRating] = useState(0);
     const relatedProducts = products.filter(p => p.category === selectedProduct.category && p.id !== selectedProduct.id).slice(0, 4);
-    
+
     const handleWhatsApp = () => {
       const message = `Hi! I'm interested in ${selectedProduct.name} (₹${selectedProduct.price})`;
       window.open(`https://wa.me/918510011234?text=${encodeURIComponent(message)}`, '_blank');
     };
-    
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -468,13 +510,13 @@ function App() {
             <ArrowRight className="w-5 h-5 rotate-180" />
             <span>Back to Home</span>
           </button>
-          
+
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
             <div className="grid md:grid-cols-2 gap-12 p-8 md:p-12">
               <div className="space-y-6">
                 <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full rounded-2xl shadow-xl" />
               </div>
-              
+
               <div className="space-y-6">
                 <div>
                   <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">{selectedProduct.name}</h1>
@@ -488,7 +530,7 @@ function App() {
                     <span className="ml-3 text-gray-600 font-medium">({selectedProduct.ratingCount} reviews)</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-4 bg-gradient-to-r from-pink-50 to-purple-50 p-6 rounded-2xl">
                   <span className="text-5xl font-extrabold text-pink-600">₹{selectedProduct.price}</span>
                   {selectedProduct.originalPrice && (
@@ -500,14 +542,14 @@ function App() {
                     </>
                   )}
                 </div>
-                
+
                 <p className="text-gray-600 text-lg leading-relaxed">{selectedProduct.description}</p>
-                
+
                 <button onClick={handleWhatsApp} className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all flex items-center justify-center space-x-3">
                   <MessageCircle className="w-6 h-6" />
                   <span>Chat on WhatsApp</span>
                 </button>
-                
+
                 <div className="border-t-2 border-gray-200 pt-6">
                   <h3 className="font-bold text-xl mb-4 text-gray-900">Rate this product:</h3>
                   <div className="flex space-x-3">
@@ -520,16 +562,16 @@ function App() {
                 </div>
               </div>
             </div>
-            
+
             <div className="border-t-2 border-gray-200 px-8 md:px-12 py-12 bg-gradient-to-br from-gray-50 to-white">
               <h2 className="text-4xl font-extrabold text-gray-900 mb-8 flex items-center">
                 <Sparkles className="w-10 h-10 mr-4 text-pink-500" />
                 Product Details
               </h2>
-              
+
               <div className="space-y-8">
                 <p className="text-gray-700 text-lg leading-relaxed">{selectedProduct.fullDescription}</p>
-                
+
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="bg-gradient-to-br from-pink-50 to-purple-50 p-8 rounded-2xl border-2 border-pink-100">
                     <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
@@ -545,7 +587,7 @@ function App() {
                       ))}
                     </ul>
                   </div>
-                  
+
                   <div className="space-y-6">
                     <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-8 rounded-2xl border-2 border-blue-100">
                       <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
@@ -554,7 +596,7 @@ function App() {
                       </h3>
                       <p className="text-gray-700 leading-relaxed">{selectedProduct.includes}</p>
                     </div>
-                    
+
                     <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl border-2 border-green-100">
                       <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                         <Clock className="w-6 h-6 mr-3 text-green-600" />
@@ -564,7 +606,7 @@ function App() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-gradient-to-r from-pink-100 via-purple-100 to-pink-100 p-8 rounded-2xl border-2 border-pink-200">
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">Why Choose This Decoration?</h3>
                   <p className="text-gray-700 text-lg leading-relaxed">
@@ -574,7 +616,7 @@ function App() {
               </div>
             </div>
           </div>
-          
+
           {relatedProducts.length > 0 && (
             <div className="mt-16">
               <h2 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">You May Also Like</h2>
@@ -596,7 +638,7 @@ function App() {
       'welcome-baby': 'Welcome Baby Decorations',
       'anniversary': 'Anniversary Decorations'
     };
-    
+
     return (
       <div className="py-16 bg-gradient-to-br from-gray-50 to-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -641,7 +683,7 @@ function App() {
         console.error(error);
       }
     };
-    
+
     return (
       <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-200">
         <h3 className="text-2xl font-bold mb-6 text-gray-900">Send us a message</h3>
@@ -691,7 +733,7 @@ function App() {
             </div>
             <p className="text-gray-400 leading-relaxed">Transform your occasions into memorable celebrations with our premium decoration services.</p>
           </div>
-          
+
           <div>
             <h4 className="font-bold text-lg mb-6 text-white">Quick Links</h4>
             <div className="space-y-3">
@@ -701,7 +743,7 @@ function App() {
               <button onClick={() => { setCurrentPage('contact'); scrollToTop(); }} className="block text-gray-400 hover:text-pink-400 transition-colors">Contact</button>
             </div>
           </div>
-          
+
           <div>
             <h4 className="font-bold text-lg mb-6 text-white">Services</h4>
             <div className="space-y-3 text-gray-400">
@@ -711,7 +753,7 @@ function App() {
               <p>Theme Decorations</p>
             </div>
           </div>
-          
+
           <div>
             <h4 className="font-bold text-lg mb-6 text-white">Contact Us</h4>
             <div className="space-y-4 text-gray-400">
@@ -730,7 +772,7 @@ function App() {
             </div>
           </div>
         </div>
-        
+
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
           <p>© 2025 Dazzle2Bliss. All rights reserved. Made with ❤️ in India</p>
         </div>
@@ -796,7 +838,7 @@ function App() {
       )}
 
       <Navbar />
-      
+
       {currentPage === 'home' && !selectedCategory && (
         <>
           <HeroSection />
@@ -806,11 +848,11 @@ function App() {
           <ProductSection title="🎨 Theme Decoration" category="theme" limit={3} showViewMore={true} />
         </>
       )}
-      
+
       {currentPage === 'home' && selectedCategory && <CategoryProducts />}
-      
+
       {currentPage === 'product' && selectedProduct && <ProductDetails />}
-      
+
       {currentPage === 'decorations' && (
         <div className="py-16 bg-gradient-to-br from-gray-50 to-pink-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -837,7 +879,7 @@ function App() {
           </div>
         </div>
       )}
-      
+
       {currentPage === 'about' && (
         <div className="py-16 bg-gradient-to-br from-gray-50 to-pink-50">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -849,7 +891,7 @@ function App() {
               <p className="text-xl text-gray-700 leading-relaxed">
                 With years of experience and a passion for perfection, we've helped countless families celebrate life's most precious moments - from welcoming new babies to milestone birthdays, romantic proposals to grand anniversaries.
               </p>
-              
+
               <div className="grid md:grid-cols-3 gap-8 pt-8">
                 <div className="text-center p-6 bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl">
                   <div className="text-5xl font-extrabold text-pink-600 mb-3">500+</div>
@@ -868,13 +910,13 @@ function App() {
           </div>
         </div>
       )}
-      
+
       {currentPage === 'contact' && (
         <div className="py-16 bg-gradient-to-br from-gray-50 to-pink-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-5xl font-extrabold text-gray-900 mb-4 text-center">Contact Us</h1>
             <p className="text-xl text-gray-600 text-center mb-12">Let's make your celebration unforgettable</p>
-            
+
             <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
               <div className="grid md:grid-cols-2 gap-12 p-10 md:p-12">
                 <div className="space-y-8">
@@ -884,7 +926,7 @@ function App() {
                       We'd love to hear from you! Reach out to us for any inquiries or to book your next celebration.
                     </p>
                   </div>
-                  
+
                   <div className="space-y-6">
                     <div className="flex items-start space-x-5">
                       <div className="bg-gradient-to-br from-pink-100 to-pink-200 p-4 rounded-2xl">
@@ -895,7 +937,7 @@ function App() {
                         <p className="text-gray-600 text-lg">8510011234</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start space-x-5">
                       <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-4 rounded-2xl">
                         <Mail className="w-7 h-7 text-purple-600" />
@@ -905,7 +947,7 @@ function App() {
                         <p className="text-gray-600 text-lg">tapasvkaushal@gmail.com</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start space-x-5">
                       <div className="bg-gradient-to-br from-pink-100 to-red-200 p-4 rounded-2xl">
                         <MapPin className="w-7 h-7 text-pink-600" />
@@ -917,14 +959,14 @@ function App() {
                     </div>
                   </div>
                 </div>
-                
+
                 <ContactForm />
               </div>
             </div>
           </div>
         </div>
       )}
-      
+
       <Footer />
     </div>
   );
