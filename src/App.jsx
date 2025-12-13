@@ -233,7 +233,7 @@ function App() {
             <div className="space-y-8 animate-fadeIn">
               <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-pink-200 px-4 py-2 rounded-full shadow-lg">
                 <Phone className="w-4 h-4 text-pink-600 animate-pulse" />
-                <span className="text-sm font-semibold text-gray-900">📞 Call Now: 8510011234</span>
+                <span className="text-sm font-semibold text-gray-900">Call Now: 8510011234</span>
               </div>
               
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
