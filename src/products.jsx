@@ -1021,6 +1021,7 @@ const products = [
   fullDescription: "A wild forest birthday decoration with green balloon garlands, woodland-themed cut-outs and nature-inspired styling for kids.",
   features: [
     "Green balloon arch",
+    "5 theme animal foil balloons",
     "Forest-themed cut-outs",
     "Woodland color palette",
     "Nature-inspired decor",
@@ -1273,10 +1274,10 @@ const products = [
   description: "Underwater mermaid theme with sea balloons and pastel colors.",
   fullDescription: "An underwater mermaid birthday decoration featuring whales, clams, starfish balloons and soft ocean-inspired colors.",
   features: [
-    "Underwater themed balloons",
-    "Mermaid and sea creature elements",
-    "Pastel ocean colors",
-    "Creative balloon shapes",
+    "Arch of 250 Balloons in Pastel Blue, Pastel Green, Pastel Pink, Pastel Purple, Light Pink Chrome, Purple Chrome and Pink chrome colors.",
+    "2 Pastel Green and Pastel Blue fringe curtains",
+    "1 Sea Green Happy Birthday Bunting",
+    "Any 2 mermaid theme foil balloons depending on availability",
     "Highly engaging kids theme"
   ],
   includes: "Underwater balloons, mermaid elements, backdrop setup.",
@@ -1393,6 +1394,7 @@ const products = [
   fullDescription: "A premium welcome baby decoration featuring dense balloon clusters, themed props and a stylish welcome message for a warm and joyful homecoming.",
   features: [
     "Premium balloon clusters",
+    "Balloon Ceiling Setup",
     "Baby-themed decorative props",
     "Stylish welcome message",
     "Balanced color coordination",
@@ -1439,7 +1441,8 @@ const products = [
   fullDescription: "A luxurious baby welcome decoration featuring premium balloons, elegant styling and themed props that create a refined and memorable newborn celebration.",
   features: [
     "Luxury balloon styling",
-    "Elegant baby props",
+    "Lightning backdrop",
+    "1 foot foil balloon",
     "Premium welcome signage",
     "Well-balanced color palette",
     "High-end visual appeal"
