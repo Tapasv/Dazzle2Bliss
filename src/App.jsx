@@ -308,121 +308,123 @@ function App() {
   );
 
   const HeroSection = () => {
-    const [formData, setFormData] = useState({ celebration: '', name: '', phone: '', email: '' });
-    const [showToast, setShowToast] = useState(false);
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      if (!formData.celebration || !formData.name || !formData.phone) {
-        alert('Please fill all fields');
-        return;
-      }
-      try {
-        await sendEmail(formData);
-        setShowToast(true);
-        setFormData({ celebration: '', name: '', phone: '', email: '' });
-        setTimeout(() => setShowToast(false), 3000);
-      } catch (error) {
-        alert('Failed to send. Please try again.');
-      }
-    };
+  const [formData, setFormData] = useState({ celebration: '', name: '', phone: '', email: '' });
+  const [showToast, setShowToast] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.celebration || !formData.name || !formData.phone) {
+      alert('Please fill all fields');
+      return;
+    }
+    try {
+      await sendEmail(formData);
+      setShowToast(true);
+      setFormData({ celebration: '', name: '', phone: '', email: '' });
+      setTimeout(() => setShowToast(false), 3000);
+    } catch (error) {
+      alert('Failed to send. Please try again.');
+    }
+  };
 
-    return (
-      <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-purple-50 py-12 md:py-24">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/2 -right-1/4 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-          <div className="absolute -bottom-1/2 -left-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-        </div>
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-purple-50 py-12 md:py-24">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-1/2 -right-1/4 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+        <div className="absolute -bottom-1/2 -left-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="space-y-6 md:space-y-8 animate-fadeIn">
-              <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-pink-200 px-3 py-2 rounded-full shadow-lg text-xs sm:text-sm">
-                <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-pink-600 animate-pulse" />
-                <span className="font-semibold text-gray-900">Call Now: 8510011234</span>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+          {/* FORM - ON LEFT FOR DESKTOP, FIRST ON MOBILE */}
+          <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-3xl shadow-2xl border border-pink-100 animate-fadeIn animation-delay-200 order-1 md:order-1">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-
-              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
-                Make Every <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">Celebration</span> Magical
-              </h1>
-
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
-                Expert decoration services for birthdays, baby showers, anniversaries, and special moments. Customized designs that bring your vision to life.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <button onClick={() => { setCurrentPage('contact'); scrollToTop(); }} className="group bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all flex items-center justify-center space-x-2">
-                  <span>Get Started</span>
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button onClick={() => { setCurrentPage('decorations'); scrollToTop(); }} className="bg-white text-pink-600 px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg border-2 border-pink-200 hover:border-pink-400 hover:shadow-xl transform hover:-translate-y-1 transition-all">
-                  View Gallery
-                </button>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6 md:pt-8 border-t border-gray-200">
-                <div>
-                  <div className="text-2xl sm:text-3xl font-bold text-pink-600">500+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Happy Clients</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-bold text-purple-600">1000+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Events</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-bold text-pink-600">4.8★</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Rating</div>
-                </div>
+              <div>
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Get ₹500 OFF</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Limited time offer</p>
               </div>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 md:p-10 rounded-3xl shadow-2xl border border-pink-100 animate-fadeIn animation-delay-200">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Get ₹500 OFF</h3>
-                  <p className="text-xs sm:text-sm text-gray-600">Limited time offer</p>
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Celebration Type *</label>
+                <select value={formData.celebration} onChange={(e) => setFormData(prev => ({ ...prev, celebration: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all bg-white" required>
+                  <option value="">Select celebration type</option>
+                  <option value="birthday">🎂 Birthday</option>
+                  <option value="baby-shower">👶 Baby Shower</option>
+                  <option value="anniversary">💑 Anniversary</option>
+                  <option value="welcome-baby">🍼 Welcome Baby</option>
+                  <option value="romantic">💝 Romantic Setup</option>
+                  <option value="other">🎨 Other</option>
+                </select>
               </div>
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Your Name *</label>
+                <input type="text" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all" required />
+              </div>
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
+                <input type="tel" value={formData.phone} onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all" required />
+              </div>
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                <input type="email" value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all" required />
+              </div>
+              <button type="submit" className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                CLAIM OFFER NOW
+              </button>
+            </form>
+          </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Celebration Type *</label>
-                  <select value={formData.celebration} onChange={(e) => setFormData(prev => ({ ...prev, celebration: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all bg-white" required>
-                    <option value="">Select celebration type</option>
-                    <option value="birthday">🎂 Birthday</option>
-                    <option value="baby-shower">👶 Baby Shower</option>
-                    <option value="anniversary">💑 Anniversary</option>
-                    <option value="welcome-baby">🍼 Welcome Baby</option>
-                    <option value="romantic">💝 Romantic Setup</option>
-                    <option value="other">🎨 Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Your Name *</label>
-                  <input type="text" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all" required />
-                </div>
-                <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
-                  <input type="tel" value={formData.phone} onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all" required />
-                </div>
-                <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
-                  <input type="email" value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:outline-none transition-all" required />
-                </div>
-                <button type="submit" className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
-                  CLAIM OFFER NOW
-                </button>
-              </form>
+          {/* TEXT CONTENT - ON RIGHT FOR DESKTOP, SECOND ON MOBILE */}
+          <div className="space-y-6 md:space-y-8 animate-fadeIn order-2 md:order-2">
+            <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-pink-200 px-3 py-2 rounded-full shadow-lg text-xs sm:text-sm">
+              <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-pink-600 animate-pulse" />
+              <span className="font-semibold text-gray-900">Call Now: 8510011234</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
+              Make Every <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">Celebration</span> Magical
+            </h1>
+
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
+              Expert decoration services for birthdays, baby showers, anniversaries, and special moments. Customized designs that bring your vision to life.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button onClick={() => { setCurrentPage('contact'); scrollToTop(); }} className="group bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all flex items-center justify-center space-x-2">
+                <span>Get Started</span>
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button onClick={() => { setCurrentPage('decorations'); scrollToTop(); }} className="bg-white text-pink-600 px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg border-2 border-pink-200 hover:border-pink-400 hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                View Gallery
+              </button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6 md:pt-8 border-t border-gray-200">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-pink-600">500+</div>
+                <div className="text-xs sm:text-sm text-gray-600">Happy Clients</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-purple-600">1000+</div>
+                <div className="text-xs sm:text-sm text-gray-600">Events</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-pink-600">4.8★</div>
+                <div className="text-xs sm:text-sm text-gray-600">Rating</div>
+              </div>
             </div>
           </div>
         </div>
-        {showToast && <div className="fixed bottom-4 right-4 left-4 sm:bottom-8 sm:right-8 sm:left-auto bg-green-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-2xl z-50 animate-slideIn"><p className="font-semibold text-sm sm:text-base">✓ Form submitted successfully!</p><p className="text-xs sm:text-sm">We'll contact you soon with your ₹500 discount.</p></div>}
       </div>
-    );
-  };
+      {showToast && <div className="fixed bottom-4 right-4 left-4 sm:bottom-8 sm:right-8 sm:left-auto bg-green-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-2xl z-50 animate-slideIn"><p className="font-semibold text-sm sm:text-base">✓ Form submitted successfully!</p><p className="text-xs sm:text-sm">We'll contact you soon with your ₹500 discount.</p></div>}
+    </div>
+  );
+};
 
   const CategoryButtons = () => {
     const categories = [
